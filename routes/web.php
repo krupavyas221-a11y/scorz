@@ -13,6 +13,12 @@ use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\SchoolAdminController;
 use App\Http\Controllers\SuperAdmin\PupilController;
 use App\Http\Controllers\SuperAdmin\ClassController;
+use App\Http\Controllers\SuperAdmin\MasterData\SubjectController;
+use App\Http\Controllers\SuperAdmin\MasterData\StrandController;
+use App\Http\Controllers\SuperAdmin\MasterData\SkillCategoryController;
+use App\Http\Controllers\SuperAdmin\MasterData\TestTypeController;
+use App\Http\Controllers\SuperAdmin\MasterData\SeasonController;
+use App\Http\Controllers\SuperAdmin\MasterData\TestLevelController;
 use App\Http\Controllers\SuperAdmin\SchoolYearController;
 use App\Http\Controllers\SuperAdmin\TeacherController;
 use Illuminate\Support\Facades\Route;
@@ -105,6 +111,26 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
              ->except(['show']);
         Route::patch('teachers/{teacher}/toggle-status', [TeacherController::class, 'toggleStatus'])
              ->name('teachers.toggle-status');
+
+        // ── Master Data ──────────────────────────────────────────────────────
+        foreach ([
+            'subjects'         => SubjectController::class,
+            'strands'          => StrandController::class,
+            'skill-categories' => SkillCategoryController::class,
+            'test-types'       => TestTypeController::class,
+            'seasons'          => SeasonController::class,
+            'test-levels'      => TestLevelController::class,
+        ] as $uri => $ctrl) {
+            $param = str_replace('-', '_', $uri); // e.g. skill_categories
+            Route::get("{$uri}/export-csv", [$ctrl, 'exportCsv'])->name("{$uri}.export-csv");
+            Route::get("{$uri}/export-pdf", [$ctrl, 'exportPdf'])->name("{$uri}.export-pdf");
+            Route::resource($uri, $ctrl)
+                 ->parameters([$uri => 'entry'])
+                 ->except(['show', 'create', 'edit']);
+            Route::patch("{$uri}/{entry}/toggle-status", [$ctrl, 'toggleStatus'])
+                 ->name("{$uri}.toggle-status")
+                 ->where('entry', '[0-9]+');
+        }
 
         // Classes Management
         Route::resource('classes', ClassController::class)

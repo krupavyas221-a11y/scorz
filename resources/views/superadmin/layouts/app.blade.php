@@ -177,6 +177,29 @@
             </a>
         </div>
         <div class="nav-section">
+            <div class="nav-label">Master Data</div>
+            @php
+                $masterNav = [
+                    ['label' => 'Subjects',         'route' => 'superadmin.subjects.index'],
+                    ['label' => 'Strands',          'route' => 'superadmin.strands.index'],
+                    ['label' => 'Skill Categories', 'route' => 'superadmin.skill-categories.index'],
+                    ['label' => 'Test Types',       'route' => 'superadmin.test-types.index'],
+                    ['label' => 'Seasons',          'route' => 'superadmin.seasons.index'],
+                    ['label' => 'Test Levels',      'route' => 'superadmin.test-levels.index'],
+                ];
+            @endphp
+            @foreach($masterNav as $item)
+                <a href="{{ route($item['route']) }}"
+                   class="nav-item {{ request()->routeIs($item['route']) ? 'active' : '' }}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                    </svg>
+                    {{ $item['label'] }}
+                </a>
+            @endforeach
+        </div>
+        <div class="nav-section">
             <div class="nav-label">Management</div>
             <a href="{{ route('superadmin.classes.index') }}"
                class="nav-item {{ request()->routeIs('superadmin.classes.*') ? 'active' : '' }}">
