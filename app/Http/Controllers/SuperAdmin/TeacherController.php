@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\TeacherCredentials;
 use App\Models\Role;
 use App\Models\School;
+use App\Models\SchoolClass;
 use App\Models\TeacherAssignment;
 use App\Models\User;
 use App\Models\UserPin;
@@ -66,13 +67,14 @@ class TeacherController extends Controller
             'email'        => ['required', 'email', 'max:191', 'unique:users,email'],
             'scorz_admin'  => ['nullable', 'boolean'],
             'scorz_access' => ['nullable', 'boolean'],
-            'school_id'    => ['required', 'exists:schools,id'],
-            'school_year'  => ['required', 'string', 'max:30'],
-            'class_name'   => ['required', 'string', 'max:30'],
+            'school_id'   => ['required', 'exists:schools,id'],
+            'school_year' => ['required', 'string', 'max:30'],
+            'class_id'    => ['required', 'exists:classes,id'],
         ]);
 
         DB::transaction(function () use ($request) {
             $school        = School::findOrFail($request->school_id);
+            $schoolClass   = SchoolClass::findOrFail($request->class_id);
             $plainPassword = Str::password(10, symbols: false);
             $plainPin      = str_pad(random_int(0, 99999), 5, '0', STR_PAD_LEFT);
 
@@ -107,7 +109,8 @@ class TeacherController extends Controller
                 'user_id'     => $user->id,
                 'school_id'   => $school->id,
                 'school_year' => $request->school_year,
-                'class_name'  => $request->class_name,
+                'class_name'  => $schoolClass->name,
+                'class_id'    => $schoolClass->id,
             ]);
 
             // 5. Send credentials email
@@ -147,12 +150,14 @@ class TeacherController extends Controller
             'name'         => ['required', 'string', 'max:255'],
             'scorz_admin'  => ['nullable', 'boolean'],
             'scorz_access' => ['nullable', 'boolean'],
-            'school_id'    => ['required', 'exists:schools,id'],
-            'school_year'  => ['required', 'string', 'max:30'],
-            'class_name'   => ['required', 'string', 'max:30'],
+            'school_id'   => ['required', 'exists:schools,id'],
+            'school_year' => ['required', 'string', 'max:30'],
+            'class_id'    => ['required', 'exists:classes,id'],
         ]);
 
         DB::transaction(function () use ($request, $teacher) {
+            $schoolClass = SchoolClass::findOrFail($request->class_id);
+
             $teacher->update([
                 'name'         => $request->name,
                 'scorz_admin'  => $request->boolean('scorz_admin'),
@@ -165,7 +170,8 @@ class TeacherController extends Controller
                 'user_id'     => $teacher->id,
                 'school_id'   => $request->school_id,
                 'school_year' => $request->school_year,
-                'class_name'  => $request->class_name,
+                'class_name'  => $schoolClass->name,
+                'class_id'    => $schoolClass->id,
             ]);
 
             // Ensure school role is correct

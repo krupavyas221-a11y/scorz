@@ -178,6 +178,22 @@
         </div>
         <div class="nav-section">
             <div class="nav-label">Management</div>
+            <a href="{{ route('superadmin.classes.index') }}"
+               class="nav-item {{ request()->routeIs('superadmin.classes.*') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/>
+                </svg>
+                Classes
+            </a>
+            <a href="{{ route('superadmin.school-years.index') }}"
+               class="nav-item {{ request()->routeIs('superadmin.school-years.*') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
+                </svg>
+                School Years
+            </a>
             <a href="{{ route('superadmin.school-admins.index') }}"
                class="nav-item {{ request()->routeIs('superadmin.school-admins.*') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

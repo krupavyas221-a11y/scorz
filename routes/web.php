@@ -12,6 +12,8 @@ use App\Http\Controllers\SuperAdmin\Auth\ResetPasswordController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\SchoolAdminController;
 use App\Http\Controllers\SuperAdmin\PupilController;
+use App\Http\Controllers\SuperAdmin\ClassController;
+use App\Http\Controllers\SuperAdmin\SchoolYearController;
 use App\Http\Controllers\SuperAdmin\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -103,6 +105,20 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
              ->except(['show']);
         Route::patch('teachers/{teacher}/toggle-status', [TeacherController::class, 'toggleStatus'])
              ->name('teachers.toggle-status');
+
+        // Classes Management
+        Route::resource('classes', ClassController::class)
+             ->except(['show']);
+        Route::patch('classes/{class}/toggle-status', [ClassController::class, 'toggleStatus'])
+             ->name('classes.toggle-status');
+
+        // School Years Management
+        Route::resource('school-years', SchoolYearController::class)
+             ->except(['show']);
+        Route::patch('school-years/{schoolYear}/toggle-status', [SchoolYearController::class, 'toggleStatus'])
+             ->name('school-years.toggle-status');
+        Route::patch('school-years/{schoolYear}/assign-schools', [SchoolYearController::class, 'assignSchools'])
+             ->name('school-years.assign-schools');
 
         // Pupils Management
         Route::get('pupils/export-csv', [PupilController::class, 'exportCsv'])->name('pupils.export-csv');

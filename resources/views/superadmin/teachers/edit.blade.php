@@ -129,10 +129,16 @@
 
                 <div class="form-group">
                     <label>Class <span style="color:#f87171">*</span></label>
-                    <input type="text" name="class_name" class="form-control"
-                           value="{{ old('class_name', $assignment?->class_name) }}"
-                           placeholder="e.g. 7A" required>
-                    @error('class_name')<div class="field-error">{{ $message }}</div>@enderror
+                    <select name="class_id" id="class-select" class="form-control" required>
+                        <option value="">Select class…</option>
+                        @foreach(\App\Models\SchoolClass::where('is_active', true)->orderBy('name')->get() as $cls)
+                            <option value="{{ $cls->id }}"
+                                {{ old('class_id', $assignment?->class_id) == $cls->id ? 'selected' : '' }}>
+                                {{ $cls->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('class_id')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
             </div>
         </div>

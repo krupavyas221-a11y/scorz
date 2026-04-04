@@ -76,4 +76,9 @@ class School extends Model
                     ->withPivot(['is_active', 'assigned_at'])
                     ->withTimestamps();
     }
+
+    public function academicYears(): BelongsToMany
+    {
+        return $this->belongsToMany(SchoolYear::class, 'school_school_year')->withTimestamps();
+    }
 }
