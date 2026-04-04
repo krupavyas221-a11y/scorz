@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController as SchoolForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController as SchoolLoginController;
+use App\Http\Controllers\Auth\ResetPasswordController as SchoolResetPasswordController;
+use App\Http\Controllers\Auth\ResetPinController;
+use App\Http\Controllers\SchoolAdmin\DashboardController as SchoolAdminDashboardController;
+use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use App\Http\Controllers\SuperAdmin\Auth\ForgotPasswordController;
 use App\Http\Controllers\SuperAdmin\Auth\LoginController;
 use App\Http\Controllers\SuperAdmin\Auth\ResetPasswordController;
@@ -11,6 +17,54 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+/*
+|--------------------------------------------------------------------------
+| School Portal — Authentication (common for School Admin + Teacher)
+|--------------------------------------------------------------------------
+*/
+
+// Guest-only: redirect authenticated school users to their dashboard
+Route::middleware('guest:school')->group(function () {
+
+    // Step 1 — Role selection
+    Route::get('login',       [SchoolLoginController::class, 'showRoleSelect'])->name('login');
+    Route::post('login/role', [SchoolLoginController::class, 'selectRole'])->name('login.role');
+
+    // Step 2 — Credentials
+    Route::get('login/credentials',  [SchoolLoginController::class, 'showCredentials'])->name('login.credentials');
+    Route::post('login/credentials', [SchoolLoginController::class, 'submitCredentials'])->name('login.credentials');
+
+    // Step 3 — PIN
+    Route::get('login/pin',  [SchoolLoginController::class, 'showPin'])->name('login.pin');
+    Route::post('login/pin', [SchoolLoginController::class, 'submitPin'])->name('login.pin');
+
+    // Forgot / Reset Password
+    Route::get('forgot-password',  [SchoolForgotPasswordController::class, 'show'])->name('password.request');
+    Route::post('forgot-password', [SchoolForgotPasswordController::class, 'send'])->name('password.email');
+
+    Route::get('reset-password/{token}', [SchoolResetPasswordController::class, 'show'])->name('password.reset');
+    Route::post('reset-password',        [SchoolResetPasswordController::class, 'reset'])->name('password.update');
+
+    // Request PIN reset (accessible without being logged in)
+    Route::get('reset-pin',         [ResetPinController::class, 'showRequest'])->name('pin.reset.request');
+    Route::post('reset-pin',        [ResetPinController::class, 'sendLink'])->name('pin.reset.send');
+    Route::get('reset-pin/{token}', [ResetPinController::class, 'showForm'])->name('pin.reset.form');
+    Route::post('reset-pin/update', [ResetPinController::class, 'update'])->name('pin.reset.update');
+});
+
+// Authenticated school routes
+Route::middleware('auth:school')->group(function () {
+    Route::post('logout', [SchoolLoginController::class, 'logout'])->name('logout');
+
+    // School Admin dashboard
+    Route::get('school/dashboard', [SchoolAdminDashboardController::class, 'index'])
+         ->name('school-admin.dashboard');
+
+    // Teacher dashboard
+    Route::get('teacher/dashboard', [TeacherDashboardController::class, 'index'])
+         ->name('teacher.dashboard');
 });
 
 /*

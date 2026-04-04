@@ -48,6 +48,11 @@ return [
             'provider' => 'users',
         ],
 
+        'school' => [
+            'driver'   => 'session',
+            'provider' => 'users',
+        ],
+
         'pupil' => [
             'driver'   => 'session',
             'provider' => 'pupils',
@@ -111,6 +116,13 @@ return [
         ],
 
         'superadmin' => [
+            'provider' => 'users',
+            'table'    => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire'   => 60,
+            'throttle' => 60,
+        ],
+
+        'school' => [
             'provider' => 'users',
             'table'    => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire'   => 60,

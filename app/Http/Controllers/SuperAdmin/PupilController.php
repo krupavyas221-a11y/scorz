@@ -11,7 +11,7 @@ use App\Models\User;
 use App\Models\UserSchoolRole;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -161,7 +161,7 @@ class PupilController extends Controller
     }
 
     // ------------------------------------------------------------------ EXPORT CSV
-    public function exportCsv(Request $request): Response
+    public function exportCsv(Request $request): StreamedResponse
     {
         $pupils = Pupil::with(['school', 'teacher'])
             ->when($request->filled('school_id'), fn ($q) => $q->where('school_id', $request->school_id))
