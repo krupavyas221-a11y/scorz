@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'is_active', 'last_login_at'])]
+#[Fillable(['name', 'email', 'password', 'is_active', 'last_login_at', 'scorz_admin', 'scorz_access'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -26,7 +26,14 @@ class User extends Authenticatable
             'password'          => 'hashed',
             'is_active'         => 'boolean',
             'last_login_at'     => 'datetime',
+            'scorz_admin'       => 'boolean',
+            'scorz_access'      => 'boolean',
         ];
+    }
+
+    public function teacherAssignments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TeacherAssignment::class);
     }
 
     // One PIN per user

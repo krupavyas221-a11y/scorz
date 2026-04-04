@@ -11,7 +11,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Redirect unauthenticated users to the correct login page per guard
+        $middleware->redirectGuestsTo(function ($request) {
+            if ($request->is('superadmin/*')) {
+                return route('superadmin.login');
+            }
+            return route('login');
+        });
+
+        // Redirect already-authenticated users away from guest pages
+        $middleware->redirectUsersTo(function ($request) {
+            if ($request->is('superadmin/*')) {
+                return route('superadmin.dashboard');
+            }
+            return '/';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
