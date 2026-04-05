@@ -13,6 +13,7 @@ use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\SchoolAdminController;
 use App\Http\Controllers\SuperAdmin\PupilController;
 use App\Http\Controllers\SuperAdmin\ClassController;
+use App\Http\Controllers\SuperAdmin\QuestionController;
 use App\Http\Controllers\SuperAdmin\MasterData\SubjectController;
 use App\Http\Controllers\SuperAdmin\MasterData\StrandController;
 use App\Http\Controllers\SuperAdmin\MasterData\SkillCategoryController;
@@ -131,6 +132,11 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
                  ->name("{$uri}.toggle-status")
                  ->where('entry', '[0-9]+');
         }
+
+        // Question Bank
+        Route::resource('questions', QuestionController::class)->except(['show']);
+        Route::patch('questions/{question}/toggle-status', [QuestionController::class, 'toggleStatus'])
+             ->name('questions.toggle-status');
 
         // Classes Management
         Route::resource('classes', ClassController::class)
